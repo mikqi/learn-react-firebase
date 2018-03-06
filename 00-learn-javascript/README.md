@@ -10,6 +10,7 @@
 1. [Bolean Values](#boolean)
 1. [Conditional](#conditional)
 1. [Function](#function)
+1. [Loop](#loop)
 
 ## Types
 
@@ -176,3 +177,27 @@ console.log(sum(2)) // => 4
 const sum = num => num + num
 console.log(sum(6)) // => 12
 ```
+
+## Loop
+```javascript
+const arr = [1, 2, 3, 4, 5, 6]
+
+// FOR
+for (let i = 0; i <= arr.length; i ++) {
+  console.log(arr[i])
+}
+
+// WHILE
+let i = 0;
+while(i < arr.length) {
+  console.log(arr[i])
+  i++
+}
+
+// forEach
+// array methods
+arr.forEach(val => {
+  console.log(val)
+})
+```
+
