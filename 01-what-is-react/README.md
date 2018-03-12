@@ -1,9 +1,8 @@
-
-# Apa itu `React`?
+#  `React`
 
 Sebuah framework javascript untuk membuat antar muka
 
-## Fitur dari `React`
+## Fitur dari React
 
 ### Deklaratif
 Rancang tampilan dengan mudah untuk setiap state dari aplikasi Anda, dan dapat berubah secara efisien memperbarui dan membuat `komponen` yang tepat saat data anda berubah.
