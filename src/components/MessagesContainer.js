@@ -8,7 +8,7 @@ export default class MessagesContainer extends Component {
   render() {
     return (
       <div className="p-3">
-        {this.props.listMessages.map(chat => <CardMessage message={chat.message} name={chat.name} />)}
+        {this.props.listMessages.map((chat, i) => <CardMessage key={i} message={chat.message} name={chat.name} />)}
       </div>
     );
   }
