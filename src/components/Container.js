@@ -15,6 +15,22 @@ const styles = {
   }
 }
 
+const dummyChat = [
+  {
+    name: 'Unyil',
+    message: 'Hello guys apa kabar?'
+  }, {
+    name: 'Usro',
+    message: 'Heyy unyil apa kabar?'
+  }, {
+    name: 'Unyil',
+    message: 'Ehh. usro. Baik sro.'
+  }, {
+    name: 'Pak Ogah',
+    message: 'Ehh. Bagi cepe dong den.'
+  }
+]
+
 export default class Container extends Component {
   render() {
     return (
@@ -27,7 +43,7 @@ export default class Container extends Component {
             <div className="col col-md-8 p-0" style={{
               background: '#dee3e9'
             }}>
-              <MessagesContainer />
+              <MessagesContainer listMessages={dummyChat} />
               <SendContainer />
             </div>
           </div>
