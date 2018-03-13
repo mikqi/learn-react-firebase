@@ -32,6 +32,27 @@ const dummyChat = [
 ]
 
 export default class Container extends Component {
+  state = {
+    name: 'Unyil',
+    message: ''
+  }
+
+  constructor(props) {
+    super(props)
+    this.onMessageChange = this.onMessageChange.bind(this)
+    this.onSendMessage = this.onSendMessage.bind(this)
+  }
+
+  onMessageChange(el) {
+    const message = el.target.value
+    this.setState({ message })
+    console.log(this.state)
+  }
+
+  onSendMessage() {
+    console.log(this.state)
+  }
+
   render() {
     return (
       <div style={styles.centerCenter}>
@@ -44,7 +65,11 @@ export default class Container extends Component {
               background: '#dee3e9'
             }}>
               <MessagesContainer listMessages={dummyChat} />
-              <SendContainer />
+              <SendContainer
+                onMessageChange={this.onMessageChange}
+                onSendMessage={this.onSendMessage}
+                isMessage={this.state.message.length === 0}
+                />
             </div>
           </div>
         </div>
