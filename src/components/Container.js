@@ -34,7 +34,8 @@ const dummyChat = [
 export default class Container extends Component {
   state = {
     name: 'Unyil',
-    message: ''
+    message: '',
+    chats: dummyChat
   }
 
   constructor(props) {
@@ -50,7 +51,16 @@ export default class Container extends Component {
   }
 
   onSendMessage() {
-    console.log(this.state)
+    const payload = {
+      name: this.state.name,
+      message: this.state.message
+    }
+    const newChat = [...this.state.chats, payload]
+
+    this.setState({
+      message: '',
+      chats: newChat
+    })
   }
 
   render() {
@@ -64,11 +74,11 @@ export default class Container extends Component {
             <div className="col col-md-8 p-0" style={{
               background: '#dee3e9'
             }}>
-              <MessagesContainer listMessages={dummyChat} />
+              <MessagesContainer listMessages={this.state.chats} />
               <SendContainer
                 onMessageChange={this.onMessageChange}
                 onSendMessage={this.onSendMessage}
-                isMessage={this.state.message.length === 0}
+                message={this.state.message}
                 />
             </div>
           </div>

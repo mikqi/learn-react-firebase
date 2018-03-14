@@ -16,10 +16,11 @@ export default class SendContainer extends Component {
           type="text"
           style={{width: '85%', outline: 'none'}}
           placeholder="Type a message"
+          value={this.props.message}
           onChange={this.props.onMessageChange}
           />
         <button
-          disabled={this.props.isMessage}
+          disabled={this.props.message.length === 0}
           onClick={this.props.onSendMessage}
           type="button"
           className="btn btn-primary"
