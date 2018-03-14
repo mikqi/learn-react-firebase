@@ -86,6 +86,9 @@ export default class Container extends Component {
     }
     const newChat = [...this.state.chats, payload]
 
+    const conn = firebase.database().ref('/messages')
+    conn.push(payload)
+
     this.setState({
       message: '',
       chats: newChat
