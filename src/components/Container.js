@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import firebase from 'firebase'
 import ListUsers from './ListUsers'
 import SendContainer from './SendContainer'
 import MessagesContainer from './MessagesContainer'
@@ -57,8 +58,19 @@ export default class Container extends Component {
 
   constructor(props) {
     super(props)
+    const config = {
+      apiKey: "AIzaSyCI_YMZ4bTlyULMzv9mfExaxRjPx3LYoHU",
+      authDomain: "fir-realtime-webapps.firebaseapp.com",
+      databaseURL: "https://fir-realtime-webapps.firebaseio.com",
+      projectId: "fir-realtime-webapps",
+      storageBucket: "fir-realtime-webapps.appspot.com",
+      messagingSenderId: "983536714376"
+    };
+
     this.onMessageChange = this.onMessageChange.bind(this)
     this.onSendMessage = this.onSendMessage.bind(this)
+
+    firebase.initializeApp(config)
   }
 
   onMessageChange(el) {
@@ -81,6 +93,7 @@ export default class Container extends Component {
   }
 
   render() {
+    console.log(firebase)
     return (
       <div style={styles.centerCenter}>
         <div className="container card" style={{height: 600, boxShadow: 'rgba(0, 0, 0, 0.15) 0px 3px 10px 0px', borderRadius: 5}}>
@@ -89,13 +102,14 @@ export default class Container extends Component {
               background: '#fafafa',
               overflowY: 'scroll',
             }}>
-              <ListUsers users={dummyUsers} />
+              <ListUsers users={dummyUsers} db={firebase} />
             </div>
             <div className="col col-md-8 p-0" style={{
               background: '#dee3e9'
             }}>
-              <MessagesContainer listMessages={this.state.chats} />
+              <MessagesContainer listMessages={this.state.chats} db={firebase} />
               <SendContainer
+                db={firebase}
                 onMessageChange={this.onMessageChange}
                 onSendMessage={this.onSendMessage}
                 message={this.state.message}
