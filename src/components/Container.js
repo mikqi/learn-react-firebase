@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import firebase from 'firebase'
 import ListUsers from './ListUsers'
 import SendContainer from './SendContainer'
@@ -66,11 +66,24 @@ export default class Container extends Component {
       storageBucket: "fir-realtime-webapps.appspot.com",
       messagingSenderId: "983536714376"
     };
+    firebase.initializeApp(config)
 
     this.onMessageChange = this.onMessageChange.bind(this)
     this.onSendMessage = this.onSendMessage.bind(this)
 
-    firebase.initializeApp(config)
+    const app = firebase.database().ref('/messages');
+    app.on('value', snapshot => {
+      this.getDataMessages(snapshot.val())
+    })
+  }
+
+  getDataMessages(val) {
+    const messages = val
+    const messageData = Object.keys(messages).map(key => messages[key])
+
+    this.setState({
+      chats: messageData
+    })
   }
 
   onMessageChange(el) {
@@ -99,8 +112,8 @@ export default class Container extends Component {
     console.log(firebase)
     return (
       <div style={styles.centerCenter}>
-        <div className="container card" style={{height: 600, boxShadow: 'rgba(0, 0, 0, 0.15) 0px 3px 10px 0px', borderRadius: 5}}>
-          <div className="row" style={{height: '100%'}}>
+        <div className="container card" style={{ height: 600, boxShadow: 'rgba(0, 0, 0, 0.15) 0px 3px 10px 0px', borderRadius: 5 }}>
+          <div className="row" style={{ height: '100%' }}>
             <div className="col col-md-4" style={{
               background: '#fafafa',
               overflowY: 'scroll',
@@ -116,7 +129,7 @@ export default class Container extends Component {
                 onMessageChange={this.onMessageChange}
                 onSendMessage={this.onSendMessage}
                 message={this.state.message}
-                />
+              />
             </div>
           </div>
         </div>
