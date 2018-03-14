@@ -31,10 +31,27 @@ const dummyChat = [
   }
 ]
 
+const dummyUsers = [
+  {
+    name: 'Si Unyil',
+  }, {
+    name: 'Si Usro'
+  }, {
+    name: 'Si Ucrit',
+  }, {
+    name: 'Pak Ogah'
+  }, {
+    name: 'Pak Raden'
+  }, {
+    name: 'Si Memey'
+  }
+]
+
 export default class Container extends Component {
   state = {
     name: 'Unyil',
     message: '',
+    users: dummyUsers,
     chats: dummyChat
   }
 
@@ -68,8 +85,11 @@ export default class Container extends Component {
       <div style={styles.centerCenter}>
         <div className="container card" style={{height: 600, boxShadow: 'rgba(0, 0, 0, 0.15) 0px 3px 10px 0px', borderRadius: 5}}>
           <div className="row" style={{height: '100%'}}>
-            <div className="col col-md-4" style={{background: '#fafafa'}}>
-              <ListUsers />
+            <div className="col col-md-4" style={{
+              background: '#fafafa',
+              overflowY: 'scroll',
+            }}>
+              <ListUsers users={dummyUsers} />
             </div>
             <div className="col col-md-8 p-0" style={{
               background: '#dee3e9'
