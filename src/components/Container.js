@@ -50,10 +50,11 @@ const dummyUsers = [
 
 export default class Container extends Component {
   state = {
-    name: 'Unyil',
+    name: '',
     message: '',
     users: dummyUsers,
-    chats: dummyChat
+    chats: dummyChat,
+    isEditUsername: false,
   }
 
   constructor(props) {
@@ -70,6 +71,7 @@ export default class Container extends Component {
 
     this.onMessageChange = this.onMessageChange.bind(this)
     this.onSendMessage = this.onSendMessage.bind(this)
+    this.handleUsername = this.handleUsername.bind(this)
 
     const app = firebase.database().ref('/messages');
     app.on('value', snapshot => {
@@ -108,8 +110,13 @@ export default class Container extends Component {
     })
   }
 
+  handleUsername() {
+    this.setState({ isEditUsername : !this.state.isEditUsername})
+  }
+
   render() {
     console.log(firebase)
+    const state = this.state
     return (
       <div style={styles.centerCenter}>
         <div className="container card" style={{ height: 600, boxShadow: 'rgba(0, 0, 0, 0.15) 0px 3px 10px 0px', borderRadius: 5 }}>
@@ -118,6 +125,24 @@ export default class Container extends Component {
               background: '#fafafa',
               overflowY: 'scroll',
             }}>
+              <div className="mb-4 mt-4 pl-3 pr-3 row">
+                <div className="col-md-8 pr-0">
+                  {state.isEditUsername ? 
+                    <input
+                      type="text"
+                      placeholder="Atur Username"
+                      value={state.name}
+                      className="form-control"/>
+                    : <span className="h5">{state.name !== '' ? state.name : 'Atur Username'}</span>
+                  }
+                </div>
+                <div className="col-md-4">
+                  <button className="btn btn-primary" onClick={this.handleUsername}>
+                    {state.isEditUsername ? 'Simpan' : 'Ubah'}
+                  </button>
+                </div>
+              </div>
+              <h4 className="pl-3 mt-4">Active User</h4>
               <ListUsers users={dummyUsers} db={firebase} />
             </div>
             <div className="col col-md-8 p-0" style={{
