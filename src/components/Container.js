@@ -51,6 +51,7 @@ const dummyUsers = [
 export default class Container extends Component {
   state = {
     name: '',
+    userId: '',
     message: '',
     users: dummyUsers,
     chats: dummyChat,
@@ -73,19 +74,29 @@ export default class Container extends Component {
     this.onSendMessage = this.onSendMessage.bind(this)
     this.handleUsername = this.handleUsername.bind(this)
 
-    const app = firebase.database().ref('/messages');
-    app.on('value', snapshot => {
-      this.getDataMessages(snapshot.val())
+    const messagesApp = firebase.database().ref('/messages');
+    const onlineUsers = firebase.database().ref('/users');
+
+    messagesApp.on('value', snapshot => {
+      this.getDataMessages(snapshot.val(), 'chats')
+    })
+    
+    onlineUsers.on('value', snapshot => {
+      this.getDataMessages(snapshot.val(), 'users')
     })
   }
 
-  getDataMessages(val) {
-    const messages = val
-    const messageData = Object.keys(messages).map(key => messages[key])
+  getDataMessages(val, props) {
+    const value = val
+    const data = value && Object.keys(value).map(key => value[key])
+    // const keys = value && Object.keys(value)
+    // const lastId = keys && keys[keys.length - 1]
+
+    // const userId = props === 'users' && this.state.userId === '' ? lastId : ''
 
     this.setState({
-      chats: messageData
-    })
+      [props]: data || [],
+    }, () => console.log(this.state))
   }
 
   onMessageChange(el) {
@@ -112,6 +123,29 @@ export default class Container extends Component {
 
   handleUsername() {
     this.setState({ isEditUsername : !this.state.isEditUsername})
+    debugger
+    if (this.state.userId) {
+      const conn = firebase.database().ref(`/users/${this.state.userId}`)
+      conn.update({
+        name: this.state.name
+      })
+    } else {
+      const conn = firebase.database().ref('/users')
+      const key = conn.push({
+        name: this.state.name
+      }).key
+
+      this.setState({
+        userId: key
+      })
+    }
+  }
+
+  handleUsernameChange = (e) => {
+    const value = e.target.value;
+    this.setState({
+      name: value
+    })
   }
 
   render() {
@@ -129,6 +163,7 @@ export default class Container extends Component {
                 <div className="col-md-8 pr-0">
                   {state.isEditUsername ? 
                     <input
+                      onChange={this.handleUsernameChange}
                       type="text"
                       placeholder="Atur Username"
                       value={state.name}
@@ -143,17 +178,16 @@ export default class Container extends Component {
                 </div>
               </div>
               <h4 className="pl-3 mt-4">Active User</h4>
-              <ListUsers users={dummyUsers} db={firebase} />
+              <ListUsers users={state.users} />
             </div>
             <div className="col col-md-8 p-0" style={{
               background: '#dee3e9'
             }}>
-              <MessagesContainer listMessages={this.state.chats} db={firebase} />
+              <MessagesContainer listMessages={state.chats} />
               <SendContainer
-                db={firebase}
                 onMessageChange={this.onMessageChange}
                 onSendMessage={this.onSendMessage}
-                message={this.state.message}
+                message={state.message}
               />
             </div>
           </div>
