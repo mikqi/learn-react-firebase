@@ -500,10 +500,25 @@ Mari kita rekap apa yang terjadi dan urutan metode dipanggil disebut:
 
 3. Saat output `Clock` dimasukkan ke dalam DOM, `React` memanggil hook lifecycle `componentDidMount()`. Di dalamnya, komponen `Clock` meminta browser untuk mengatur timer untuk memanggil metode `tick()` setiap satu detik.
 
-4. Setiap detik browser memanggil metode `tick()`. Di dalamnya, komponen `Clock` menjadwalkan update UI dengan memanggil `setState()` dengan sebuah objek yang berisi waktu saat ini. Berkat panggilan setState (), Bereaksi tahu negara telah berubah, dan memanggil metode render () lagi untuk mempelajari apa yang seharusnya ada di layar. Kali ini, this.state.date dalam metode render () akan berbeda, sehingga output render akan mencakup waktu yang diperbarui. Bereaksi memperbarui DOM yang sesuai.
+4. Setiap detik browser memanggil metode `tick()`. Di dalamnya, komponen `Clock` menjadwalkan update UI dengan memanggil `setState()` dengan sebuah objek yang berisi waktu saat ini. Karena fungsi `setState()`, React tahu state telah berubah, dan memanggil metode `render()` lagi untuk memperbaharui apa yang seharusnya ada di layar. Kali ini, `this.state.date` dalam metode `render()` akan berbeda, sehingga output render akan memiliki waktu yang telah diperbarui. React memperbarui DOM yang sesuai.
 
-Jika komponen Jam pernah dikeluarkan dari DOM, Bereaksi memanggil komponenWillUnmount () kait siklus hidup sehingga timer dihentikan.
+5. Jika komponen `Clock` dihapus dari DOM, React memanggil `componenWillUnmount()` sehingga timer dihentikan.
 
+### Menggunakan State Dengan Tepat
+Ada 3 hal yang perlu diketahui tentang `setState()`
+
+#### Jangan memodifikasi state secara langsung
+```
+// Wrong
+this.state.comment = 'Hello';
+
+// Correct
+this.setState({comment: 'Hello'});
+```
+
+#### Kondisi state mungkin asyncronous
+
+#### State mungkin digabung
 ## 5. Penanganan event
 
 ## 6. Rendering secara kondisional
