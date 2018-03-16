@@ -356,24 +356,153 @@ State mirip dengan props, hanya saja state terisolaso didalam komponen dan hanya
 
 Kita dapat mengubah komponen fungsional `Clock` menjadi class dalam lima langkah:
 
-1. Membuat sebuah class `ES6` dengan me-extend `React.Component`
-2. Menambahkan satu fungsi kosong bernama `render`
-3. Memindahakan body dari komponen pada fungsi render tersebut
-4. Mengganti `props` menjadi `this.props`
-5. Hapus fungsi kosong yang sudah dipindahkan
+1.  Membuat sebuah class `ES6` dengan me-extend `React.Component`
+2.  Menambahkan satu fungsi kosong bernama `render`
+3.  Memindahakan body dari komponen pada fungsi render tersebut
+4.  Mengganti `props` menjadi `this.props`
+5.  Hapus fungsi kosong yang sudah dipindahkan
 
 ```
 class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()};
+  }
+
   render() {
     return (
       <div>
         <h1>Hello, world!</h1>
-        <h2>It is {this.props.date.toLocaleTimeString()}.</h2>
+        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Clock />,
+  document.getElementById('root')
+);
+```
+
+### Menambahkan Lifecycle kedalam class
+
+Dalam aplikasi dengan banyak komponen, sangat penting untuk membebaskan sumber daya yang diambil oleh komponen saat dihancurkan.
+
+Kita akan mengatur timer setiap kali Jam diberikan ke DOM untuk pertama kalinya. Ini disebut "mounting" in React.
+
+Kita akan menghapus timer kapan pun DOM yang diproduksi oleh Jam dihapus. Ini disebut "unmounting" dalam React.
+
+Kita akan mendeklarasikan metode khusus pada kelas komponen untuk menjalankan beberapa kode saat komponen dipasang dan di-unmount:
+
+```
+class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()};
+  }
+
+  componentDidMount() {
+
+  }
+
+  componentWillUnmount() {
+
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Hello, world!</h1>
+        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
       </div>
     );
   }
 }
 ```
+
+Metode diatas disebut "lifecycle hooks".
+
+`componentDidMount()` hook berjalan setelah output komponen telah diberikan ke DOM. Ini adalah tempat yang baik untuk mengatur timer:
+
+```
+componentDidMount() {
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
+}
+```
+
+Perhatikan bagaimana kita menyimpan ID timer tepat di ini.
+
+Anda bebas menambahkan field tambahan ke kelas secara manual jika Anda perlu menyimpan sesuatu yang tidak digunakan untuk keluaran visual.
+
+Jika Anda tidak menggunakan sesuatu dalam `render()`, seharusnya tidak ditambahkan dalam `this.state`.
+
+Kita juga akan menghapus penghitung waktu di `componenWillUnmount()`:
+
+```
+componentWillUnmount() {
+    clearInterval(this.timerID);
+}
+```
+
+Akhirnya, kita akan menerapkan metode yang disebut `tick()` bahwa komponen `Clock` akan berjalan setiap detik.
+
+Kita akan menggunakan `this.setState()` untuk melakukan pembaruan pada `state` komponen:
+
+```
+class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()};
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  tick() {
+    this.setState({
+      date: new Date()
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Hello, world!</h1>
+        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Clock />,
+  document.getElementById('root')
+);
+```
+
+Mari kita rekap apa yang terjadi dan urutan metode dipanggil disebut:
+
+1. Bila `<Clock />` dijalankan pada `ReactDOM.render()`, React akan memanggil konstruktor komponen `Clock`. Karena `Clock` perlu menampilkan waktu saat ini, ia menginisialisasi `this.state` dengan objek waktu saat ini kemudian akan memperbarui state tersebut.
+
+2. React kemudian memanggil metode pembuatan komponen Clock pada fungsi `render()`. Begitulah React mengetahui apa yang harus ditampilkan di layar. React kemudian memperbarui DOM agar sesuai dengan keluaran render `Clock`.
+
+3. Saat output `Clock` dimasukkan ke dalam DOM, `React` memanggil hook lifecycle `componentDidMount()`. Di dalamnya, komponen `Clock` meminta browser untuk mengatur timer untuk memanggil metode `tick()` setiap satu detik.
+
+4. Setiap detik browser memanggil metode `tick()`. Di dalamnya, komponen `Clock` menjadwalkan update UI dengan memanggil `setState()` dengan sebuah objek yang berisi waktu saat ini. Berkat panggilan setState (), Bereaksi tahu negara telah berubah, dan memanggil metode render () lagi untuk mempelajari apa yang seharusnya ada di layar. Kali ini, this.state.date dalam metode render () akan berbeda, sehingga output render akan mencakup waktu yang diperbarui. Bereaksi memperbarui DOM yang sesuai.
+
+Jika komponen Jam pernah dikeluarkan dari DOM, Bereaksi memanggil komponenWillUnmount () kait siklus hidup sehingga timer dihentikan.
 
 ## 5. Penanganan event
 
@@ -382,7 +511,3 @@ class Clock extends React.Component {
 ## 7. List dan key
 
 ## 8. Forms
-
-```
-
-```
